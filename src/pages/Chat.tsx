@@ -10,11 +10,12 @@ import { IconLoader, IconUserSquareRounded } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 export default function Chat() {
-    const { loading, user } = useAuth();
+    const { loading, user, logout } = useAuth();
     const [messages, setMessages] = useState<ChatSession['messages']>([]);
     const [input, setInput] = useState("");
     const [sessions, setSessions] = useState<ChatSession[]>([]);
     const [currentSessionId, setCurrentSessionId] = useState<number | null>(null);
+    const [open, setOpen] = useState(true);
 
     useEffect(() => {
         if (currentSessionId) {
@@ -27,10 +28,6 @@ export default function Chat() {
         setMessages([]);
 
         websocketService.connect(API_URL);
-
-        return () => {
-            websocketService.socket?.close();
-        };
     }, [currentSessionId]);
 
     useEffect(() => {
@@ -75,7 +72,7 @@ export default function Chat() {
     return (
         <div
             className={cn(
-                "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
+                "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700",
                 "h-screen"
             )}
         >
@@ -84,7 +81,7 @@ export default function Chat() {
                     <div className="flex items-center justify-center h-12 w-full">
                         <IconLoader className="animate-spin h-6 w-6 text-primary-500" />
                     </div>
-                ) : <Sidebar open={true}>
+                ) : <Sidebar open={open} setOpen={setOpen}>
                     <SidebarBody className="justify-between gap-10">
                         <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
                             <Logo />
@@ -106,7 +103,7 @@ export default function Chat() {
                                 ))}
                             </div>
                         </div>
-                        <div>
+                        <div className="flex flex-col gap-2">
                             <SidebarLink
                                 link={{
                                     label: user?.username ?? "User",
@@ -114,6 +111,15 @@ export default function Chat() {
                                     icon: <IconUserSquareRounded className="w-7 h-7" />,
                                 }}
                             />
+                            <button
+                                onClick={() => {
+                                    websocketService.socket?.close();
+                                    logout();
+                                }}
+                                className="px-2 py-1 w-full cursor-pointer bg-red-500 text-white rounded-md"
+                            >
+                                Logout
+                            </button>
                         </div>
                     </SidebarBody>
                 </Sidebar>
@@ -131,7 +137,7 @@ const Dashboard = ({ messages, input, setInput, handleSendMessage }: {
 }) => {
     return (
         <div className="flex flex-1">
-            <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
+            <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 h-full">
                 <div className="flex-1 overflow-y-auto">
                     {
                         messages.length ? (
