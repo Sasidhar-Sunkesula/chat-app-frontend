@@ -1,8 +1,8 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import AuthForm from './components/AuthForm';
 import { useAuth } from './hooks/useAuth';
-// import Chat from './pages/Chat';
+import Chat from './pages/Chat';
 import { AuthProvider } from './providers/AuthProvider';
-import AuthForm from './components/signup-form';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     const { isAuthenticated } = useAuth();
@@ -17,14 +17,14 @@ export default function App() {
                     <Routes>
                         <Route path="/login" element={<AuthForm mode="login" />} />
                         <Route path="/register" element={<AuthForm mode="register" />} />
-                        {/* <Route
+                        <Route
                             path="/"
-                            element={ */}
-                        {/* // <PrivateRoute>
-                                //     <Chat />
-                                // </PrivateRoute> */}
-                        {/* } */}
-                        {/* /> */}
+                            element={
+                                <PrivateRoute>
+                                    <Chat />
+                                </PrivateRoute>
+                            }
+                        />
                     </Routes>
                 </div>
             </Router>

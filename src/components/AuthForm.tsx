@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface AuthFormProps {
@@ -18,6 +18,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
     password: ''
   });
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -44,7 +48,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+    <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl shadow-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
       <h2 className="text-center font-bold text-xl text-neutral-800 dark:text-neutral-200">
         {mode === 'login' ? 'Sign In' : 'Register'}
       </h2>
@@ -100,6 +104,29 @@ export default function AuthForm({ mode }: AuthFormProps) {
           {mode === 'login' ? 'Sign in' : 'Sign up'} &rarr;
         </button>
       </form>
+      <div className="text-center text-sm text-neutral-600 dark:text-neutral-400">
+        {mode === 'login' ? (
+          <>
+            Don't have an account?{' '}
+            <button
+              className="text-neutral-800 cursor-pointer dark:text-neutral-200 underline"
+              onClick={() => navigate('/register')}
+            >
+              Sign up
+            </button>
+          </>
+        ) : (
+          <>
+            Already have an account?{' '}
+            <button
+              className="text-neutral-800 cursor-pointer dark:text-neutral-200 underline"
+              onClick={() => navigate('/login')}
+            >
+              Sign in
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
